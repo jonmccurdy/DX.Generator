@@ -1,0 +1,3 @@
+useDynLib(DX.Generator , .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+export("set.dx")
