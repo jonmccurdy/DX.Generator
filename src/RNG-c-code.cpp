@@ -34,11 +34,15 @@ static int seed[K_MAX]={K_X,S_X};
 static int XX[K_MAX];
 static double res;
 int set=0;
-
-
-
+int number;
 
 int i, K12, K13, K23;
+
+
+int get_random(){
+  number = (2147483629*number + 2147483587) & PP;
+  return number;
+}
 
 void dx_1(){
   K_X = seed[0];
@@ -81,7 +85,7 @@ void dx_4(){
 
 void dx_init(){
   for (i=0; i< K_MAX; i++){
-    XX[i] = R::runif(0,PP);
+    XX[i] = get_random();
   }
 }
 
@@ -118,8 +122,9 @@ double * user_unif_rand(){
 void user_unif_init(Int32 seed_in) {
   K_X = seed[0];
   S_X = seed[1];
-  
-  seed[2] = R::runif(0,PP);
+
+  number=seed_in;
+  seed[2] =  get_random();
   
   if(K_X<5){
     K_X=47;
