@@ -1,0 +1,5 @@
+useDynLib(DX.Generator , .registration=TRUE)
+exportPattern("dx_init") 
+importFrom(Rcpp, evalCpp)
+importFrom("stats", "runif")
+importFrom("utils", "capture.output")

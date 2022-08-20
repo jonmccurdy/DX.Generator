@@ -1,0 +1,22 @@
+Package: DX.Generator
+Type: Package
+Title: Allows Users to Select the DX-Class of RNG as the Default Generator in R
+Version: 1.0
+Date: 2022-8-20
+Authors@R: 
+  c(person(given = "Jonathan",
+           family = "McCurdy",
+           role = "cre",
+           email = "jrmccrdy@memphis.edu"),
+    person(given = "Lih-Yuan",
+           family = "Deng",
+           role = c("aut", "ctb")))
+Maintainer: Jonathan McCurdy <jrmccrdy@memphis.edu>
+Description: Implements the DX-class of Psuedo-Random Number Generators which are very efficient and have nice empirical properties. When it comes to Random Number Generators, R currently provides seven different generators which are built-in; the default being the MT-19937 generator which has not passed all empirical tests. Users are able to select the DX-class of generators, which has passed all empirical tests, as the user-supplied generator as well as choose the order of the linear recurrence as well as number of non-zero coefficients in the MRG by using the function.
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.7),
+  setRNG,
+  utils
+LinkingTo: Rcpp
+RoxygenNote: 7.2.1
+Encoding: UTF-8
