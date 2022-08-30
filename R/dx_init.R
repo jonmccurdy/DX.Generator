@@ -23,7 +23,7 @@
 #' small serial correlations between any successive subset of numbers.  If \eqn{j} consecutive 
 #' numbers need to appear independent, then choose argument \eqn{K} such that \eqn{K > j}.
 #' 
-#' @param K the order of the linear recurrence. \eqn{K} must be an integer between 5 and 3500
+#' @param K the order of the linear recurrence. \eqn{K} must be an integer between 5 and 50,000
 #' @param S number of non-zero coefficients in the MRG. \eqn{S} must be an either 1,2,3 or 4
 #'
 #' @examples
@@ -32,7 +32,7 @@
 #' @references 
 #' L.-Y. Deng and H. Xu. A system of high-dimensional, efficient, long-cycle and portable uniform random number generators. ACM Transactions on Modeling and Computer Simulation (TOMACS), 13 (4):299–309, 2003.
 
-dx_init <- function(K=47, S=1) {
+dx_init <- function(K=1597, S=1) {
   invisible(capture.output(setRNG::setRNG(kind="user-supplied", seed=c(K,S,.Random.seed[4])),type = "output"))
   invisible(runif(1))
   set.seed(.Random.seed[4])

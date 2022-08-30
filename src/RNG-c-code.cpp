@@ -4,7 +4,7 @@
 #include <R_ext/Random.h>
 using namespace Rcpp;
 
-#define K_MAX	3500
+#define K_MAX	50000
 #define PP 2147483647  //2^31-1
 #define IPP 4.6566129e-10
 #define I32 2.328306437e-10;
@@ -27,7 +27,7 @@ static int I_X;           /* running index */
 
 unsigned long MODP(unsigned long z) {return ((((z)&PP)+((z)>>31)) &PP);}
 
-static int K_X = 47;
+static int K_X = 1597;
 static int S_X = 1;
 static int nseed = 3;
 static int seed[K_MAX]={K_X,S_X};
@@ -127,15 +127,15 @@ void user_unif_init(Int32 seed_in) {
   seed[2] =  get_random();
   
   if(K_X<5){
-    K_X=47;
+    K_X=1597;
     seed[0]=K_X;
-    Rcerr << "The value of 'K' that was chosen is not compatible with this package. \nBy default, a DX-47-" << S_X<< " generator was chosen.\n";
+    Rcerr << "The value of 'K' that was chosen is not compatible with this package. \nBy default, a DX-1597-" << S_X<< " generator was chosen.\n";
   }
   
-  if(K_X>3500){
-    K_X=47;
+  if(K_X>50000){
+    K_X=1597;
     seed[0]=K_X;
-    Rcerr << "The value of 'K' that was chosen is not compatible with this package. \nBy default, a DX-47-" << S_X<< " generator was chosen.\n";
+    Rcerr << "The value of 'K' that was chosen is not compatible with this package. \nBy default, a DX-1597-" << S_X<< " generator was chosen.\n";
   }
   generator_type();
   
