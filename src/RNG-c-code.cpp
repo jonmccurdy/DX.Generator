@@ -34,13 +34,13 @@ static int seed[K_MAX]={K_X,S_X};
 static int XX[K_MAX];
 static double res;
 int set=0;
-int number;
+Int32 number;
 
 int i, K12, K13, K23;
 
 
 int get_random(){
-  number = (2147483629*number + 2147483587) & PP;
+  number = 69069*number + 1 & PP;
   return number;
 }
 
@@ -48,7 +48,6 @@ void dx_1(){
   K_X = seed[0];
   S_X = seed[1];
   int II0 = I_X;
-  for (i=0; i< K_X; i++) printf("%d ", XX[i]);
   if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
   XX[I_X] = MODP(B_X1 * XX[I_X] + XX[II0]);
   res = (double) XX[I_X] * IPP;
@@ -125,7 +124,7 @@ void user_unif_init(Int32 seed_in) {
   S_X = seed[1];
 
   number=seed_in;
-  seed[2] =  get_random();
+  seed[2] = seed_in;
   
   if(K_X<5){
     K_X=1597;
