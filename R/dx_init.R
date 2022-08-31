@@ -27,7 +27,7 @@
 #' @param S number of non-zero coefficients in the MRG. \eqn{S} must be an either 1,2,3 or 4
 #'
 #' @examples
-#' \dontrun{dx_init(K=53, S=2)}
+#' \dontrun{dx_init(K=1597, S=1)}
 #' 
 #' @references 
 #' L.-Y. Deng and H. Xu. A system of high-dimensional, efficient, long-cycle and portable uniform random number generators. ACM Transactions on Modeling and Computer Simulation (TOMACS), 13 (4):299–309, 2003.

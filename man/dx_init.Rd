@@ -4,10 +4,10 @@
 \alias{dx_init}
 \title{dx_init}
 \usage{
-dx_init(K = 47, S = 1)
+dx_init(K = 1597, S = 1)
 }
 \arguments{
-\item{K}{the order of the linear recurrence. \eqn{K} must be an integer between 5 and 3500}
+\item{K}{the order of the linear recurrence. \eqn{K} must be an integer between 5 and 50,000}
 
 \item{S}{number of non-zero coefficients in the MRG. \eqn{S} must be an either 1,2,3 or 4}
 }
@@ -34,7 +34,7 @@ small serial correlations between any successive subset of numbers.  If \eqn{j} 
 numbers need to appear independent, then choose argument \eqn{K} such that \eqn{K > j}.
 }
 \examples{
-\dontrun{dx_init(K=53, S=2)}
+\dontrun{dx_init(K=1597, S=1)}
 
 }
 \references{
