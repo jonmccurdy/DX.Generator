@@ -48,6 +48,7 @@ void dx_1(){
   K_X = seed[0];
   S_X = seed[1];
   int II0 = I_X;
+  for (i=0; i< K_X; i++) printf("%d ", XX[i]);
   if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
   XX[I_X] = MODP(B_X1 * XX[I_X] + XX[II0]);
   res = (double) XX[I_X] * IPP;
@@ -84,7 +85,7 @@ void dx_4(){
 }
 
 void dx_init(){
-  for (i=0; i< K_MAX; i++){
+  for (i=0; i< K_X; i++){
     XX[i] = get_random();
   }
 }
