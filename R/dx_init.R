@@ -33,7 +33,8 @@
 #' L.-Y. Deng and H. Xu. A system of high-dimensional, efficient, long-cycle and portable uniform random number generators. ACM Transactions on Modeling and Computer Simulation (TOMACS), 13 (4):299–309, 2003.
 
 dx_init <- function(K=1597, S=1) {
-  invisible(capture.output(setRNG::setRNG(kind="user-supplied", seed=c(K,S,.Random.seed[4])),type = "output"))
+  #invisible(capture.output(setRNG::setRNG(kind="user-supplied", seed=c(K,S,.Random.seed[4])),type = "output"))
+  setRNG::setRNG(kind="user-supplied", seed=c(K,S,.Random.seed[4]))
   invisible(runif(1))
   set.seed(.Random.seed[4])
 }

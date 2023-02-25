@@ -4,19 +4,13 @@
 #include <R_ext/Random.h>
 using namespace Rcpp;
 
-#define K_MAX	50000
+#define K_MAX	35000
 #define PP 2147483647  //2^31-1
 #define IPP 4.6566129e-10
 #define I32 2.328306437e-10;
 #define ROTR(x,n) ((((unsigned long) x)>>(n))|(((unsigned long) x)<<(32-(n))))
 
-#define TSIZE 256 		// actual table size used
-#define maxT 1024 		//maximum table size
-#define maxB 15
-#define B_X 32896  		
-#define B_Y 32776
-#define T_MOD TSIZE-1
-#define MOD2_32 4294967295  
+#define P_mod 2147400803 //2^31 - 82845
 
 static long long B_X1 = 536869888; // will change based on K, S- can be done more efficiently
 static long long B_X2 = 65011712;
@@ -27,6 +21,9 @@ static int I_X;           /* running index */
 
 unsigned long MODP(unsigned long z) {return ((((z)&PP)+((z)>>31)) &PP);}
 
+#define MUL20(x) ( ((x)>>11) + ((x)<<20)&PP ) 
+#define MUL9(x) ( ((x)>>22) + ((x)<<9) &PP )
+
 static int K_X = 1597;
 static int S_X = 1;
 static int nseed = 3;
@@ -36,17 +33,17 @@ static double res;
 int set=0;
 Int32 number;
 
-int i, K12, K13, K23;
-
+int i, K12, K13, K23, K_X_old, S_X_old;
+unsigned long S;
 
 int get_random(){
-  number = 69069*number + 1 & PP;
+  number = (1664525*number + 1013904223) & PP;
   return number;
 }
 
 void dx_1(){
   K_X = seed[0];
-  S_X = seed[1];
+  S_X = seed[1];                  /*makes sure we stay with this S-value*/
   int II0 = I_X;
   if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
   XX[I_X] = MODP(B_X1 * XX[I_X] + XX[II0]);
@@ -55,7 +52,7 @@ void dx_1(){
 
 void dx_2(){
   K_X = seed[0];
-  S_X = seed[1];
+  S_X = seed[1];                 /*makes sure we stay with this S-value*/
   int II0 = I_X;
   if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
   XX[I_X] = MODP(B_X2 * (XX[I_X] + XX[II0]));
@@ -64,7 +61,7 @@ void dx_2(){
 
 void dx_3(){
   K_X = seed[0];
-  S_X = seed[1];
+  S_X = seed[1];               /*makes sure we stay with this S-value*/
   int II0 = I_X;
   if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
   if(++K12 >= K_X) K12 = 0;    /*wrap around K12*/
@@ -74,12 +71,71 @@ void dx_3(){
 
 void dx_4(){
   K_X = seed[0];
-  S_X = seed[1];
+  S_X = seed[1];                /*makes sure we stay with this S-value*/
   int II0 = I_X;
   if(++I_X >= K_X)   I_X = 0;    /*wrap around running index */
   if(++K13 >= K_X) K13 = 0;    /*wrap around K13*/
   if(++K23 >= K_X) K23 = 0;    /*wrap around K23*/
   XX[I_X] = MODP(B_X4 * (XX[I_X]+XX[K13]+XX[K23]+XX[II0]));
+  res= (double) XX[I_X] * IPP;
+}
+
+void dx_B1(){
+  K_X = seed[0];
+  S_X = 5;                      /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
+  S = MODP(XX[I_X] + XX[II0]); 
+  XX[I_X] = MODP( MUL20(S) + MUL9(S));
+  res = (double) XX[I_X] * IPP;
+}
+
+void dx_B2(){
+  K_X = seed[0];
+  S_X = seed[1];                      /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
+  S = MODP(XX[I_X] + XX[II0]); 
+  XX[I_X] = MODP(1049088*S);
+  res = (double) XX[I_X] * IPP;
+}
+
+void dx_P1(){
+  K_X = seed[0];
+  S_X = seed[1];                  /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
+  XX[I_X] = (B_X1 * XX[I_X] + XX[II0]) % P_mod;
+  res = (double) XX[I_X] * IPP;
+}
+
+void dx_P2(){
+  K_X = seed[0];
+  S_X = seed[1];                 /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
+  XX[I_X] = (B_X2 * (XX[I_X] + XX[II0])) % P_mod;
+  res = (double) XX[I_X] * IPP;
+}
+
+void dx_P3(){
+  K_X = seed[0];
+  S_X = seed[1];               /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)  I_X = 0;     /*wrap around running index */
+  if(++K12 >= K_X) K12 = 0;    /*wrap around K12*/
+  XX[I_X] = (B_X3 * (XX[I_X] + XX[K12] + XX[II0])) % P_mod;
+  res= (double) XX[I_X] * IPP;
+}
+
+void dx_P4(){
+  K_X = seed[0];
+  S_X = seed[1];                /*makes sure we stay with this S-value*/
+  int II0 = I_X;
+  if(++I_X >= K_X)   I_X = 0;    /*wrap around running index */
+  if(++K13 >= K_X) K13 = 0;    /*wrap around K13*/
+  if(++K23 >= K_X) K23 = 0;    /*wrap around K23*/
+  XX[I_X] = (B_X4 * (XX[I_X]+XX[K13]+XX[K23]+XX[II0])) % P_mod;
   res= (double) XX[I_X] * IPP;
 }
 
@@ -103,6 +159,24 @@ void generator_type(){
     dx_init();
     break;
   case 4: dx_gen=&dx_4;
+    dx_init();
+    break;
+  case 5: dx_gen=&dx_B1;
+    dx_init();
+    break;
+  case 6: dx_gen=&dx_B2;
+    dx_init();
+    break;
+  case 7: dx_gen=&dx_P1;
+    dx_init();
+    break;
+  case 8: dx_gen=&dx_P2;
+    dx_init();
+    break;
+  case 9: dx_gen=&dx_P3;
+    dx_init();
+    break;
+  case 10: dx_gen=&dx_P4;
     dx_init();
     break;
   default: dx_gen=&dx_1;
@@ -144,9 +218,11 @@ void user_unif_init(Int32 seed_in) {
   K13 = 2*seed[0]/3-1;   
   K23 = seed[0]/3-1;
   
-  if(set!=0){
-    Rcout << "# You are currently using a DX-" << K_X << "-" << S_X << " Generator.\n# To alter it use the dx_init() function.\n";
-  }
+  // if(set==0||K_X_old != K_X || S_X_old != S_X){
+  //   Rcout << "# You are currently using a DX-" << K_X << "-" << S_X << " Generator.\n# To alter it use the dx_init() function.\n";
+  // }
+  K_X_old = K_X;
+  S_X_old = S_X;
   set=1;
 }
 
